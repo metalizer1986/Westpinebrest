@@ -1,1084 +1,633 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Westpine.Brest — A-frame дом с баней и купелью</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --black: #0a0a0a;
-            --white: #ffffff;
-            --gray-100: #f5f5f5;
-            --gray-200: #e5e5e5;
-            --gray-600: #525252;
-            --gray-900: #171717;
-            --accent: #dc2626;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            color: var(--black);
-            line-height: 1.6;
-            background: var(--white);
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1.5rem 4%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        nav.scrolled {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            padding: 1rem 4%;
-            box-shadow: 0 1px 0 var(--gray-200);
-        }
-
-        .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-            letter-spacing: -0.05em;
-        }
-
-        nav.scrolled .logo {
-            color: var(--black);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--white);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: opacity 0.3s;
-            position: relative;
-        }
-
-        nav.scrolled .nav-links a {
-            color: var(--black);
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        /* Hero */
-        .hero {
-            height: 100vh;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            padding: 4rem;
-            overflow: hidden;
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-        }
-
-        .hero-bg img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-
-        .hero-content {
-            max-width: 700px;
-            color: var(--white);
-        }
-
-        .hero-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-tag::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: #22c55e;
-            border-radius: 50%;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 6vw, 5rem);
-            line-height: 1;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-desc {
-            font-size: 1.125rem;
-            opacity: 0.9;
-            max-width: 500px;
-            margin-bottom: 2.5rem;
-            font-weight: 300;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.7;
-        }
-
-        .hero-phone {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--white);
-            color: var(--black);
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 100px;
-            transition: all 0.3s;
-        }
-
-        .hero-phone:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        /* Sections */
-        section {
-            padding: 8rem 4%;
-        }
-
-        .section-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-            align-items: end;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--gray-600);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            line-height: 1.1;
-        }
-
-        .section-desc {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            max-width: 500px;
-        }
-
-        /* About */
-        .about {
-            background: var(--gray-100);
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-visual {
-            position: relative;
-        }
-
-        .about-img-main {
-            width: 100%;
-            height: 600px;
-            object-fit: cover;
-            border-radius: 1rem;
-        }
-
-        .about-img-small {
-            position: absolute;
-            bottom: -2rem;
-            right: -2rem;
-            width: 300px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 0.75rem;
-            border: 4px solid var(--white);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .about-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .about-text {
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-            font-size: 1.0625rem;
-            line-height: 1.8;
-        }
-
-        .features-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--white);
-            border-radius: 0.75rem;
-            transition: transform 0.3s;
-        }
-
-        .feature-row:hover {
-            transform: translateX(10px);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--black);
-            color: var(--white);
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        /* Gallery */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 300px;
-            gap: 1rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.75rem;
-            cursor: pointer;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-item.large {
-            grid-column: span 2;
-            grid-row: span 2;
-        }
-
-        .gallery-item.wide {
-            grid-column: span 2;
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.5rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-overlay h4 {
-            color: var(--white);
-            font-size: 1.125rem;
-        }
-
-        /* Amenities */
-        .amenities {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        .amenities .section-label {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .amenities .section-title {
-            color: var(--white);
-        }
-
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-        .amenity-card {
-            background: var(--black);
-            padding: 3rem 2rem;
-            text-align: center;
-            transition: background 0.3s;
-        }
-
-        .amenity-card:hover {
-            background: rgba(255,255,255,0.05);
-        }
-
-        .amenity-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-        }
-
-        .amenity-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .amenity-card p {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.9375rem;
-            line-height: 1.6;
-        }
-
-        /* Pricing */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-
-        .pricing-card {
-            padding: 2.5rem;
-            border: 1px solid var(--gray-200);
-            border-radius: 1rem;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .pricing-card:hover {
-            border-color: var(--black);
-            transform: translateY(-5px);
-        }
-
-        .pricing-card.popular {
-            background: var(--black);
-            color: var(--white);
-            border-color: var(--black);
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: var(--white);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-radius: 100px;
-        }
-
-        .pricing-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .pricing-period {
-            color: var(--gray-600);
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .pricing-card.popular .pricing-period {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .price {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .price-currency {
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-
-        .price-note {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-        }
-
-        .pricing-card.popular .price-note {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .pricing-features {
-            list-style: none;
-        }
-
-        .pricing-features li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--gray-200);
-            font-size: 0.9375rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .pricing-card.popular .pricing-features li {
-            border-bottom-color: rgba(255,255,255,0.1);
-        }
-
-        .pricing-features li::before {
-            content: '—';
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        .pricing-card.popular .pricing-features li::before {
-            color: var(--white);
-        }
-
-        /* Contact */
-        .contact {
-            background: var(--gray-100);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .contact-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-info > p {
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-        }
-
-        .contact-methods {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .contact-method {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--white);
-            border-radius: 1rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s;
-        }
-
-        .contact-method:hover {
-            transform: translateX(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .contact-icon-box {
-            width: 56px;
-            height: 56px;
-            background: var(--black);
-            color: var(--white);
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .contact-method div strong {
-            display: block;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--gray-600);
-            margin-bottom: 0.25rem;
-        }
-
-        .contact-method div span {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        /* Footer */
-        footer {
-            padding: 3rem 4%;
-            text-align: center;
-            border-top: 1px solid var(--gray-200);
-        }
-
-        .footer-logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .footer-copy {
-            color: var(--gray-600);
-            font-size: 0.875rem;
-        }
-
-        /* Mobile */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .menu-toggle span {
-            width: 24px;
-            height: 2px;
-            background: var(--white);
-            transition: 0.3s;
-        }
-
-        nav.scrolled .menu-toggle span {
-            background: var(--black);
-        }
-
-        @media (max-width: 968px) {
-            .section-header {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-img-small {
-                display: none;
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .gallery-item.large {
-                grid-column: span 2;
-                grid-row: span 1;
-            }
-
-            .amenities-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero {
-                padding: 2rem;
-                align-items: center;
-                text-align: center;
-            }
-
-            .hero-stats {
-                justify-content: center;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                height: 100vh;
-                background: var(--white);
-                flex-direction: column;
-                padding: 6rem 2rem;
-                transition: 0.3s;
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .nav-links a {
-                color: var(--black);
-                font-size: 1.25rem;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-item.large,
-            .gallery-item.wide {
-                grid-column: span 1;
-            }
-
-            .amenities-grid {
-                grid-template-columns: 1fr;
-            }
-
-            section {
-                padding: 4rem 4%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predict.Fun Hybrid Terminal — VWAP · EMA · RSI · MACD</title>
+<style>
+:root{
+    --bg0:#05070f;
+    --bg1:#0c1224;
+    --bg2:#131b34;
+    --bg3:#1d2745;
+    --txt:#e6ebff;
+    --txt2:#7e8bc0;
+    --green:#00f28f;
+    --green-soft:rgba(0,242,143,0.15);
+    --red:#ff4b5c;
+    --orange:#ffb347;
+    --blue:#5b73ff;
+    --cyan:#27f3ff;
+    --border:#2a355f;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'JetBrains Mono','Fira Code',monospace;}
+body{background:var(--bg0);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:12px;}
+.app{
+    display:grid;
+    grid-template-columns:280px 1fr 300px;
+    grid-template-rows:64px calc(100vh - 64px - 24px);
+    gap:1px;
+    background:var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    max-width:1400px;
+    margin:auto;
+    width:100%;
+    min-height:640px;
+}
+@media(max-width:1100px){
+    .app{grid-template-columns:220px 1fr;grid-template-rows:64px auto auto;}
+    .side-r{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
+}
+@media(max-width:780px){
+    .app{grid-template-columns:1fr;grid-template-rows:64px auto auto auto;}
+    .side-l,.side-r{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+}
+.badge{
+    position:fixed;z-index:50;padding:6px 14px;border-radius:16px;font-size:11px;font-weight:700;
+    border:1px solid var(--border);backdrop-filter:blur(10px);background:rgba(9,13,30,.85);
+}
+#badgeFeed{top:14px;left:14px;color:var(--green);border-color:var(--green);}
+#badgePF{top:14px;right:14px;color:var(--blue);border-color:var(--blue);}
+.hdr{
+    grid-column:1/-1;
+    background:var(--bg1);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    box-shadow:0 6px 12px rgba(0,0,0,.35);
+}
+.hdr-left{display:flex;align-items:center;gap:12px;}
+.logo-dot{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--green),var(--cyan));animation:pulse 2.4s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,242,143,.4);}50%{box-shadow:0 0 16px 4px rgba(0,242,143,.15);}}
+.hdr-title{font-size:15px;font-weight:700;letter-spacing:.8px;}
+.hdr-tag{display:flex;align-items:center;gap:6px;font-size:10px;text-transform:uppercase;background:var(--red);padding:4px 10px;border-radius:20px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+@keyframes blink{50%{opacity:.2;}}
+.hdr-center{text-align:center;}
+.hdr-price{font-size:26px;font-weight:800;}
+.hdr-change{font-size:12px;color:var(--txt2);}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.hdr-btn{background:var(--bg2);border:1px solid var(--border);color:var(--txt2);padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;transition:.2s;}
+.hdr-btn:hover{border-color:var(--cyan);color:var(--txt);}
+.clock{font-size:18px;font-weight:700;}
+.clock small{display:block;color:var(--txt2);font-size:11px;letter-spacing:.5px;}
+.side-l,.side-r{background:var(--bg1);padding:14px;overflow:auto;display:flex;flex-direction:column;gap:12px;}
+.main{background:var(--bg0);padding:16px;overflow:auto;display:flex;flex-direction:column;gap:14px;}
+.card{
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    box-shadow:0 8px 18px rgba(0,0,0,.35);
+}
+.card-hdr{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11px;text-transform:uppercase;color:var(--txt2);letter-spacing:.6px;margin-bottom:10px;
+}
+.card-hdr span{display:flex;align-items:center;gap:6px;}
+.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 8px currentColor;}
+.dot-green{color:var(--green);background:var(--green);}
+.dot-red{color:var(--red);background:var(--red);}
+.dot-blue{color:var(--blue);background:var(--blue);}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.row:last-child{border-bottom:none;}
+.row-label{font-size:11px;color:var(--txt2);}
+.row-value{font-size:13px;font-weight:700;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.stat-box{background:var(--bg3);border:1px solid var(--border);padding:10px;border-radius:10px;text-align:center;}
+.stat-label{font-size:10px;color:var(--txt2);}
+.stat-value{font-size:18px;font-weight:800;}
+.chart-card canvas{width:100%;height:280px;}
+.signal-banner{
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    text-align:center;
+    background:linear-gradient(135deg,rgba(0,242,143,.05),rgba(39,243,255,.08));
+}
+.signal-banner.buy{border-color:var(--green);box-shadow:0 0 26px rgba(0,242,143,.25);}
+.signal-banner.sell{border-color:var(--red);box-shadow:0 0 26px rgba(255,75,92,.25);}
+.signal-main{font-size:42px;font-weight:900;letter-spacing:1px;}
+.signal-sub{font-size:13px;color:var(--txt2);}
+.confidence-wrap{display:flex;flex-direction:column;gap:10px;}
+.conf-bar{width:100%;height:14px;border-radius:7px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid var(--border);}
+.conf-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--orange),var(--green));transition:width .4s;}
+.conf-badge{font-weight:700;font-size:18px;}
+.sensor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.sensor-card{border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--bg1);}
+.sensor-title{font-size:13px;text-transform:uppercase;color:var(--txt2);letter-spacing:.6px;margin-bottom:8px;}
+.sensor-value{font-size:22px;font-weight:800;}
+.sensor-note{font-size:11px;color:var(--txt2);}
+.progress-line{position:relative;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:8px;}
+.progress-fill{position:absolute;inset:0 0 auto 0;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .3s;}
+.table{width:100%;border-collapse:collapse;font-size:11px;}
+.table th,.table td{border:1px solid rgba(255,255,255,.08);padding:6px;text-align:left;}
+.table th{color:var(--txt2);text-transform:uppercase;font-size:10px;}
+.conf-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.conf-item{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--txt2);}
+.conf-item.ok{color:var(--green);}
+.conf-item .ck-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:8px;}
+.conf-item.ok .ck-dot{background:var(--green);color:var(--bg1);}
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.switch{width:40px;height:20px;border-radius:10px;background:rgba(255,255,255,.08);position:relative;cursor:pointer;transition:.2s;}
+.switch::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s;}
+.switch.on{background:var(--green);}
+.switch.on::after{transform:translateX(20px);}
+.countdown{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;}
+.countdown strong{font-size:34px;}
+.badge-inline{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:10px;border:1px solid var(--border);}
+</style>
 </head>
 <body>
+<div id="badgeFeed" class="badge">● Симулированный поток</div>
+<div id="badgePF" class="badge">⚡ Offline Predict.Fun Mirror</div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <a href="#" class="logo">Westpine.Brest</a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#about">О доме</a></li>
-            <li><a href="#gallery">Фото</a></li>
-            <li><a href="#amenities">Удобства</a></li>
-            <li><a href="#pricing">Цены</a></li>
-            <li><a href="#contact">Контакты</a></li>
-        </ul>
-        <div class="menu-toggle" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+<div class="app">
+    <header class="hdr">
+        <div class="hdr-left">
+            <div class="logo-dot"></div>
+            <span class="hdr-title">Predict.Fun Hybrid Terminal</span>
+            <span class="hdr-tag"><span class="live-dot"></span> LIVE</span>
         </div>
-    </nav>
+        <div class="hdr-center">
+            <div class="hdr-price" id="hdrPrice">$--</div>
+            <div class="hdr-change" id="hdrChange">SYNC...</div>
+        </div>
+        <div class="hdr-right">
+            <button class="hdr-btn" id="btnDemo">✨ Demo режим</button>
+            <div class="clock" id="clock">--:--:--<small>UTC --:--:--</small></div>
+        </div>
+    </header>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-bg">
-            <img src="https://kimi-web-img.moonshot.cn/img/opis-cdn.tinkoffjournal.ru/ec34f0af103d4f3029ec1240934072826e957967.jpg" alt="A-frame дом Westpine.Brest">
+    <aside class="side-l">
+        <div class="card">
+            <div class="card-hdr"><span>BTC Snapshot</span><span class="dot dot-blue" id="dotFeed"></span></div>
+            <div class="row"><span class="row-label">Цена</span><span class="row-value" id="btcPrice">--</span></div>
+            <div class="row"><span class="row-label">Изм. 24ч</span><span class="row-value" id="btcChange">--</span></div>
+            <div class="row"><span class="row-label">High 24ч</span><span class="row-value" id="btcHigh">--</span></div>
+            <div class="row"><span class="row-label">Low 24ч</span><span class="row-value" id="btcLow">--</span></div>
+            <div class="row"><span class="row-label">Объём (M)</span><span class="row-value" id="btcVol">--</span></div>
         </div>
-        <div class="hero-content">
-            <div class="hero-tag">Доступен для бронирования</div>
-            <h1>A-frame дом с купелью и баней</h1>
-            <p class="hero-desc">Уникальный треугольный дом в скандинавском стиле. Собственная баня, купель с горячей водой и панорамные окна с видом на лес.</p>
-            
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-value">65</span>
-                    <span class="stat-label">м² площадь</span>
+
+        <div class="card">
+            <div class="card-hdr"><span>Indicator Pack 5/5</span><span class="badge-inline">VWAP • EMA • Pivots • RSI • MACD</span></div>
+            <table class="table">
+                <thead>
+                    <tr><th>#</th><th>Название</th><th>Настройка</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>VWAP Session</td><td>По умолчанию</td></tr>
+                    <tr><td>2</td><td>EMA 9/21 + Target</td><td>Кроссы</td></tr>
+                    <tr><td>3</td><td>Pivots HL 10 10 10</td><td>Уровни</td></tr>
+                    <tr><td>4</td><td>RSI</td><td>10 / 10</td></tr>
+                    <tr><td>5</td><td>MACD</td><td>12 / 26 / 9</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-hdr"><span>Performance Pulse</span></div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Точность</div>
+                    <div class="stat-value" id="statAcc">--%</div>
                 </div>
-                <div class="stat">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label">гостя</span>
+                <div class="stat-box">
+                    <div class="stat-label">Сигналов</div>
+                    <div class="stat-value" id="statTotal">--</div>
                 </div>
-                <div class="stat">
-                    <span class="stat-value">2</span>
-                    <span class="stat-label">спальни</span>
+                <div class="stat-box">
+                    <div class="stat-label">WIN / LOSS</div>
+                    <div class="stat-value" id="statWL">--</div>
                 </div>
-            </div>
-
-            <a href="tel:+375291234567" class="hero-phone">
-                <span>📞</span>
-                <span>+375 (29) 123-45-67</span>
-            </a>
-        </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="about">
-        <div class="section-header">
-            <div>
-                <div class="section-label">О доме</div>
-                <h2 class="section-title">Архитектура в гармонии с природой</h2>
-            </div>
-            <p class="section-desc">A-frame — это не просто дом, это форма единения с природой. Высокие потолки, естественное освещение и деревянные конструкции создают особенную атмосферу.</p>
-        </div>
-
-        <div class="about-grid">
-            <div class="about-visual">
-                <img src="https://kimi-web-img.moonshot.cn/img/banidom.ru/a53b3cf358915da8b63bec44e2388e1b4a35438e.jpg" alt="Интерьер A-frame дома" class="about-img-main">
-                <img src="https://kimi-web-img.moonshot.cn/img/www.domino.com/0cfde07cd43166befe887b01661f46812f01a1ec.jpg" alt="Спальня на антресоли" class="about-img-small">
-            </div>
-            <div class="about-content">
-                <h3>Всё для комфортного отдыха</h3>
-                <p class="about-text">Дом построен по классической A-frame технологии с современными доработками. Панорамное остекление фронтона открывает вид на сосновый лес, а треугольная крыша создаёт уникальное пространство второго света.</p>
-                
-                <div class="features-list">
-                    <div class="feature-row">
-                        <div class="feature-icon">🔥</div>
-                        <div>
-                            <strong>Купель с подогревом</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Работает круглый год, до 40°C</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🧖</div>
-                        <div>
-                            <strong>Русская баня</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Парилка на дровах с вениками</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🌲</div>
-                        <div>
-                            <strong>Панорамный вид</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Окна от пола до потолка</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🚗</div>
-                        <div>
-                            <strong>Закрытая территория</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Парковка и беседка с мангалом</p>
-                        </div>
-                    </div>
+                <div class="stat-box">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="statStreak">--</div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Gallery -->
-    <section id="gallery">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Галерея</div>
-                <h2 class="section-title">Загляните внутрь</h2>
-            </div>
-            <p class="section-desc">Интерьер и экстерьер нашего A-frame дома в разное время суток и года.</p>
+        <div class="card">
+            <div class="card-hdr"><span>Confluence Check</span></div>
+            <div class="conf-badge" id="confScore">--/7</div>
+            <div class="conf-bar"><span id="confBar" style="width:0%;"></span></div>
+            <ul class="conf-list" id="confList"></ul>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="card chart-card">
+            <div class="card-hdr"><span>BTC/USDT — Hybrid Tickline</span><span id="chartScale" class="badge-inline">Tick: 2s</span></div>
+            <canvas id="chart"></canvas>
         </div>
 
-        <div class="gallery-grid">
-            <div class="gallery-item large">
-                <img src="https://kimi-web-img.moonshot.cn/img/media.vrbo.com/1f592e845d20a269ca0586d80ad8cc4768e53334.jpg" alt="A-frame дом с купелью">
-                <div class="gallery-overlay">
-                    <h4>Терраса с купелью</h4>
-                </div>
+        <div class="sensor-grid">
+            <div class="signal-banner" id="signalBanner">
+                <div class="signal-main" id="signalMain">WAIT</div>
+                <div class="signal-sub" id="signalSub">Подготовка данных...</div>
+                <div class="badge-inline" id="signalEdge">Edge --%</div>
             </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/coolstays.imgix.net/0a82f3b87945b0e028af8d87dea26afa4722913b.jpg" alt="Вечерний вид">
-                <div class="gallery-overlay">
-                    <h4>Вечерняя подсветка</h4>
+            <div class="card confidence-wrap">
+                <div class="card-hdr"><span>Confidence Level</span></div>
+                <div class="conf-badge" id="confPercent">--%</div>
+                <div class="conf-bar"><span id="confGauge" style="width:0%;"></span></div>
+                <div class="row">
+                    <span class="row-label">Риск</span>
+                    <span class="row-value" id="riskLabel">--</span>
                 </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/www.domino.com/dcfce0a7a750aac38ec6906c92790bf53af627f8.jpg" alt="Гостиная">
-                <div class="gallery-overlay">
-                    <h4>Гостиная</h4>
-                </div>
-            </div>
-            <div class="gallery-item wide">
-                <img src="https://kimi-web-img.moonshot.cn/img/davisframe.com/a8861f6d7ceda0b58f2b272883481a6b4a15266c.jpg" alt="Камин">
-                <div class="gallery-overlay">
-                    <h4>Зона у камина</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/cdn.apartmenttherapy.info/43074672483a5f4735ea92a653e9c8bfae59620c" alt="Ванная">
-                <div class="gallery-overlay">
-                    <h4>Ванная комната</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/cdn.skargards.com/db8db217f4f919f019d62298e20531ef1ab4bcbd.jpg" alt="Купель">
-                <div class="gallery-overlay">
-                    <h4>Купель</h4>
+                <div class="row">
+                    <span class="row-label">Momentum</span>
+                    <span class="row-value" id="momLabel">--</span>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Amenities -->
-    <section id="amenities" class="amenities">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Удобства</div>
-                <h2 class="section-title">Всё включено</h2>
+        <div class="sensor-grid">
+            <div class="sensor-card">
+                <div class="sensor-title">VWAP Session</div>
+                <div class="sensor-value" id="vwapValue">$--</div>
+                <div class="sensor-note" id="vwapNote">--</div>
+                <div class="progress-line"><div class="progress-fill" id="vwapFill" style="width:50%;"></div></div>
             </div>
-            <p class="section-desc" style="color: rgba(255,255,255,0.6);">Полный комплект для комфортного отдыха без лишних забот.</p>
-        </div>
-
-        <div class="amenities-grid">
-            <div class="amenity-card">
-                <div class="amenity-icon">🛁</div>
-                <h3>Горячая купель</h3>
-                <p>Деревянный чан с подогревом до 40°C. Работает круглый год.</p>
+            <div class="sensor-card">
+                <div class="sensor-title">EMA 21 Drift</div>
+                <div class="sensor-value" id="emaValue">$--</div>
+                <div class="sensor-note" id="emaNote">--</div>
+                <div class="progress-line"><div class="progress-fill" id="emaFill" style="width:50%;background:linear-gradient(90deg,var(--purple),var(--blue));"></div></div>
             </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🧖‍♂️</div>
-                <h3>Баня на дровах</h3>
-                <p>Традиционная русская парилка с вениками и эфирными маслами.</p>
+            <div class="sensor-card">
+                <div class="sensor-title">RSI (10)</div>
+                <div class="sensor-value" id="rsiValue">--</div>
+                <div class="sensor-note" id="rsiNote">--</div>
+                <div class="progress-line"><div class="progress-fill" id="rsiFill" style="width:50%;background:linear-gradient(90deg,var(--orange),var(--red));"></div></div>
             </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🪟</div>
-                <h3>Панорамные окна</h3>
-                <p>Фронтальное остекление с видом на сосновый бор.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🍳</div>
-                <h3>Кухня</h3>
-                <p>Вся посуда, холодильник, плита, чайник и кофемашина.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🛏️</div>
-                <h3>2 спальни</h3>
-                <p>Двуспальная кровать на антресоли и раскладной диван.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🔥</div>
-                <h3>Камин</h3>
-                <p>Живой огонь для уютных вечеров. Дрова включены.</p>
+            <div class="sensor-card">
+                <div class="sensor-title">MACD 12/26/9</div>
+                <div class="sensor-value" id="macdValue">--</div>
+                <div class="sensor-note" id="macdNote">--</div>
+                <div class="progress-line"><div class="progress-fill" id="macdFill" style="width:50%;background:linear-gradient(90deg,var(--green),var(--cyan));"></div></div>
             </div>
         </div>
-    </section>
 
-    <!-- Pricing -->
-    <section id="pricing">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Тарифы</div>
-                <h2 class="section-title">Стоимость аренды</h2>
+        <div class="sensor-grid">
+            <div class="sensor-card">
+                <div class="sensor-title">Session reset</div>
+                <div class="sensor-value" id="sessionTime">--</div>
+                <div class="sensor-note">Обновление в 00:00 UTC</div>
             </div>
-            <p class="section-desc">Прозрачные цены без скрытых платежей. Все удобства включены.</p>
-        </div>
-
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Будни</h3>
-                <p class="pricing-period">Понедельник — Четверг</p>
-                <div class="price"><span class="price-currency">Br</span> 250</div>
-                <p class="price-note">за сутки</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Баня и купель</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
-                </ul>
-            </div>
-
-            <div class="pricing-card popular">
-                <span class="pricing-badge">Популярное</span>
-                <h3>Выходные</h3>
-                <p class="pricing-period">Пятница — Воскресенье</p>
-                <div class="price"><span class="price-currency">Br</span> 350</div>
-                <p class="price-note">за сутки</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Баня и купель</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
-                    <li>Дрова для мангала</li>
-                </ul>
-            </div>
-
-            <div class="pricing-card">
-                <h3>Неделя</h3>
-                <p class="pricing-period">7 дней со скидкой</p>
-                <div class="price"><span class="price-currency">Br</span> 1500</div>
-                <p class="price-note">за неделю</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Безлимитная баня</li>
-                    <li>Средняя уборка</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
-                </ul>
+            <div class="sensor-card">
+                <div class="sensor-title">Predict.Fun Mirror</div>
+                <div class="sensor-value" id="pfTitle">--</div>
+                <div class="sensor-note" id="pfMeta">--</div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Contact -->
-    <section id="contact" class="contact">
-        <div class="section-header" style="text-align: center; display: block;">
-            <div class="section-label">Контакты</div>
-            <h2 class="section-title">Свяжитесь с нами</h2>
-            <p class="section-desc" style="margin: 1rem auto 0;">Выберите удобный способ связи.</p>
+    <aside class="side-r">
+        <div class="card">
+            <div class="card-hdr"><span>Distance Metrics</span></div>
+            <div class="row"><span class="row-label">Conf − Threshold</span><span class="row-value" id="distConf">--</span></div>
+            <div class="row"><span class="row-label">EMA9 − EMA21</span><span class="row-value" id="distEMA">--</span></div>
+            <div class="row"><span class="row-label">RSI − 50</span><span class="row-value" id="distRSI">--</span></div>
+            <div class="row"><span class="row-label">Цена − 15m AVG</span><span class="row-value" id="distPrice">--</span></div>
+            <div class="row"><span class="row-label">Momentum 5m</span><span class="row-value" id="distMom">--</span></div>
         </div>
 
-        <div class="contact-grid">
-            <div class="contact-info">
-                <div class="contact-methods">
-                    <a href="tel:+375291234567" class="contact-method">
-                        <div class="contact-icon-box">📞</div>
-                        <div>
-                            <strong>Телефон</strong>
-                            <span>+375 (29) 123-45-67</span>
-                        </div>
-                    </a>
-                    
-                    <a href="https://t.me/westpine_brest" target="_blank" class="contact-method">
-                        <div class="contact-icon-box">✈️</div>
-                        <div>
-                            <strong>Telegram</strong>
-                            <span>@westpine_brest</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="contact-info">
-                <div class="contact-methods">
-                    <a href="https://instagram.com/westpine.brest" target="_blank" class="contact-method">
-                        <div class="contact-icon-box">📷</div>
-                        <div>
-                            <strong>Instagram</strong>
-                            <span>@westpine.brest</span>
-                        </div>
-                    </a>
-                    
-                    <a href="mailto:info@westpine.by" class="contact-method">
-                        <div class="contact-icon-box">✉️</div>
-                        <div>
-                            <strong>Email</strong>
-                            <span>info@westpine.by</span>
-                        </div>
-                    </a>
-                </div>
+        <div class="card">
+            <div class="card-hdr"><span>15m Cycle</span></div>
+            <div class="countdown">
+                <strong id="cycleCountdown">--:--</strong>
+                <span id="cycleLabel">Подготовка</span>
+                <div class="badge-inline" id="phaseBadge">Phase --</div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-logo">Westpine.Brest</div>
-        <p class="footer-copy">© 2024 Аренда A-frame дома с баней и купелью</p>
-    </footer>
+        <div class="card">
+            <div class="card-hdr"><span>Alerts & Toggles</span></div>
+            <div class="switch-row"><span>Buy Sound</span><div class="switch on" data-switch="buy"></div></div>
+            <div class="switch-row"><span>Sell Sound</span><div class="switch on" data-switch="sell"></div></div>
+            <div class="switch-row"><span>Telegram Push</span><div class="switch on" data-switch="tg"></div></div>
+            <div class="switch-row"><span>Glow Theme</span><div class="switch on" data-switch="glow"></div></div>
+        </div>
+    </aside>
+</div>
 
-    <script>
-        // Navbar scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Mobile menu
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-
-        // Close menu on link click
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navLinks').classList.remove('active');
-            });
-        });
-
-        // Intersection Observer for animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.gallery-item, .amenity-card, .pricing-card, .feature-row').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
-
+<script>
+const state={
+    price:68800,
+    base:68800,
+    high:68800,
+    low:68800,
+    vol:0,
+    history:[],
+    candles:[],
+    sessionStart:null,
+    sessionPV:0,
+    sessionVol:0,
+    threshold:65,
+    stats:{wins:42,losses:28,streak:3}
+};
+const pfState={timer:300,title:'BTC Directional YES/NO',fee:'35 bps',status:'OPEN',id:'SIM-BTC-15'};
+const switches={buy:true,sell:true,tg:true,glow:true};
+const chartCanvas=document.getElementById('chart');
+const ctx=chartCanvas.getContext('2d');
+function pad(n){return String(n).padStart(2,'0');}
+function fmt(num,dec=2){return num.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
+function startSession(){
+    const now=new Date();
+    const start=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
+    state.sessionStart=start;
+    state.sessionPV=0;
+    state.sessionVol=0;
+    document.getElementById('sessionTime').textContent=start.toISOString().slice(0,10)+' 00:00';
+}
+function seedData(){
+    const now=Date.now();
+    let price=state.price;
+    for(let i=180;i>0;i--){
+        price+= (Math.random()-0.5)*80;
+        price=Math.max(20000,price);
+        state.history.push({time:now-i*5000,price});
+    }
+    price=state.history[state.history.length-1].price;
+    state.price=price;
+    state.base=state.history[0].price;
+    state.high=Math.max(...state.history.map(p=>p.price));
+    state.low=Math.min(...state.history.map(p=>p.price));
+    for(let i=60;i>0;i--){
+        const time=Math.floor((now - i*60000)/60000)*60000;
+        const o=price+(Math.random()-0.5)*80;
+        const c=o+(Math.random()-0.5)*120;
+        const h=Math.max(o,c)+Math.random()*40;
+        const l=Math.min(o,c)-Math.random()*40;
+        const v=50+Math.random()*120;
+        state.candles.push({time,o,h,l,c,v});
+        state.sessionPV+=((h+l+c)/3)*v;
+        state.sessionVol+=v;
+        price=c;
+    }
+    drawChart();
+}
+function calcEMA(values,period){
+    if(values.length===0) return 0;
+    const k=2/(period+1);
+    let ema=values[0];
+    for(let i=1;i<values.length;i++){
+        ema=values[i]*k + ema*(1-k);
+    }
+    return ema;
+}
+function calcRSI(values,period){
+    if(values.length<=period) return 50;
+    let gains=0,losses=0;
+    for(let i=values.length-period;i<values.length;i++){
+        const diff=values[i]-values[i-1];
+        if(diff>0) gains+=diff; else losses-=diff;
+    }
+    if(losses===0) return 100;
+    const rs=(gains/period)/(losses/period);
+    return 100 - (100/(1+rs));
+}
+function calcMACD(values){
+    if(values.length<2) return {line:0,signal:0,hist:0};
+    const shortPeriod=Math.min(12,values.length);
+    const longPeriod=Math.min(26,values.length);
+    const macdSeries=[];
+    let emaS=values[0],emaL=values[0];
+    const kS=2/(shortPeriod+1);
+    const kL=2/(longPeriod+1);
+    for(let i=1;i<values.length;i++){
+        emaS=values[i]*kS + emaS*(1-kS);
+        emaL=values[i]*kL + emaL*(1-kL);
+        macdSeries.push(emaS-emaL);
+    }
+    const signal=calcEMA(macdSeries.slice(-9),Math.min(9,macdSeries.length))||0;
+    const line=macdSeries[macdSeries.length-1]||0;
+    return {line,signal,hist:line-signal};
+}
+function updatePredictCard(){
+    const topics=['Breakout','Range','Vol Crush','Momentum','Reversal'];
+    const mood=topics[Math.floor(Math.random()*topics.length)];
+    pfState.title=`BTC ${mood} 15m`;
+    pfState.fee=(30+Math.floor(Math.random()*15))+' bps';
+    pfState.id='SIM-'+Math.random().toString(36).slice(2,6).toUpperCase();
+    pfState.status=Math.random()>0.2?'OPEN':'COOLDOWN';
+    pfState.timer=300;
+    document.getElementById('pfTitle').textContent=pfState.title;
+    document.getElementById('pfMeta').textContent=`${pfState.status} • ${pfState.fee} • ${pfState.id}`;
+}
+function simulateTick(){
+    const drift=(Math.random()-0.5)*120;
+    state.price=Math.max(20000,state.price+drift);
+    state.high=Math.max(state.high,state.price);
+    state.low=Math.min(state.low,state.price);
+    const change=((state.price-state.base)/state.base)*100;
+    state.vol+=60+Math.random()*90;
+    const volTick=50+Math.random()*120;
+    state.sessionPV+=state.price*volTick;
+    state.sessionVol+=volTick;
+    const tick={time:Date.now(),price:state.price};
+    state.history.push(tick);
+    if(state.history.length>300) state.history.shift();
+    const minute=Math.floor(Date.now()/60000)*60000;
+    const last=state.candles[state.candles.length-1];
+    if(!last || last.time!==minute){
+        state.candles.push({time:minute,o:state.price,h:state.price,l:state.price,c:state.price,v:volTick});
+        if(state.candles.length>240) state.candles.shift();
+    }else{
+        last.c=state.price;
+        last.h=Math.max(last.h,state.price);
+        last.l=Math.min(last.l,state.price);
+        last.v+=volTick;
+    }
+    updateStats();
+    render(change);
+    drawChart();
+}
+function updateStats(){
+    if(Math.random()>0.72){
+        state.stats.wins+=Math.random()>0.4?1:0;
+        state.stats.losses+=Math.random()>0.4?0:1;
+        state.stats.total=(state.stats.wins+state.stats.losses);
+        state.stats.streak+=Math.random()>0.5?1:-1;
+    }
+}
+function computeIndicators(){
+    const closes=state.candles.map(c=>c.c);
+    const rsi=calcRSI(closes,10);
+    const ema21=calcEMA(closes,21)||state.price;
+    const ema9=calcEMA(closes,9)||state.price;
+    const macd=calcMACD(closes);
+    const vwap=state.sessionVol>0?state.sessionPV/state.sessionVol:state.price;
+    const momentum=state.history.length>60?((state.price-state.history[state.history.length-60].price)/state.history[state.history.length-60].price)*100:0;
+    const emaMomentum=((state.price-ema21)/ema21)*100;
+    return {rsi,ema21,ema9,macd,vwap,momentum,emaMomentum};
+}
+function deriveSignal(ind){
+    let bull=0,bear=0;
+    if(state.price>=ind.vwap) bull+=3; else bear+=3;
+    if(state.price>=ind.ema21) bull+=2; else bear+=2;
+    if(ind.rsi<=35) bull+=3;
+    if(ind.rsi>=65) bear+=3;
+    if(ind.macd.hist>=0) bull+=2; else bear+=2;
+    if(ind.momentum>=0) bull+=2; else bear+=2;
+    const diff=Math.abs(bull-bear);
+    const confidence=Math.min(98,50+diff*6);
+    const direction=bull>bear?'BUY':bull<bear?'SELL':'WAIT';
+    return {direction,confidence,bull,bear};
+}
+function render(change){
+    const ind=computeIndicators();
+    const signal=deriveSignal(ind);
+    document.getElementById('hdrPrice').textContent='$'+fmt(state.price,2);
+    const chEl=document.getElementById('hdrChange');
+    chEl.textContent=(change>=0?'+':'')+change.toFixed(2)+'%';
+    chEl.style.color=change>=0?varGreen():varRed();
+    document.getElementById('btcPrice').textContent='$'+fmt(state.price,0);
+    document.getElementById('btcChange').textContent=(change>=0?'+':'')+change.toFixed(2)+'%';
+    document.getElementById('btcChange').style.color=change>=0?varGreen():varRed();
+    document.getElementById('btcHigh').textContent='$'+fmt(state.high,0);
+    document.getElementById('btcLow').textContent='$'+fmt(state.low,0);
+    document.getElementById('btcVol').textContent=(state.vol/1000).toFixed(2);
+    const vwapDiff=((state.price-ind.vwap)/ind.vwap)*100;
+    document.getElementById('vwapValue').textContent='$'+fmt(ind.vwap,2);
+    document.getElementById('vwapNote').textContent=vwapDiff>=0?'Цена выше VWAP':'Цена ниже VWAP';
+    document.getElementById('vwapFill').style.width=Math.min(100,50+vwapDiff*2)+'%';
+    document.getElementById('vwapFill').style.background=vwapDiff>=0?'linear-gradient(90deg,var(--green),var(--cyan))':'linear-gradient(90deg,var(--red),var(--orange))';
+    document.getElementById('emaValue').textContent='$'+fmt(ind.ema21,2);
+    document.getElementById('emaNote').textContent=(ind.emaMomentum>=0?'+':'')+ind.emaMomentum.toFixed(2)+'%';
+    document.getElementById('emaFill').style.width=Math.min(100,50+ind.emaMomentum*4)+'%';
+    const rsiValue=Math.round(ind.rsi);
+    document.getElementById('rsiValue').textContent=rsiValue;
+    document.getElementById('rsiNote').textContent=rsiValue<30?'Перепродан':'Нейтрально';
+    document.getElementById('rsiFill').style.width=rsiValue+'%';
+    document.getElementById('macdValue').textContent=(ind.macd.hist>=0?'+':'')+ind.macd.hist.toFixed(2);
+    document.getElementById('macdNote').textContent='Line '+ind.macd.line.toFixed(2)+' / Sig '+ind.macd.signal.toFixed(2);
+    document.getElementById('macdFill').style.width=Math.min(100,50+ind.macd.hist*80)+'%';
+    renderSignalCard(signal,ind);
+    renderConfluence(ind,signal);
+    renderStats();
+    renderDistances(ind,signal);
+    document.getElementById('dotFeed').className='dot '+(signal.direction==='BUY'?'dot-green':signal.direction==='SELL'?'dot-red':'dot-blue');
+}
+function renderSignalCard(signal,ind){
+    const banner=document.getElementById('signalBanner');
+    banner.className='signal-banner'+(signal.direction==='BUY'?' buy':signal.direction==='SELL'?' sell':'');
+    document.getElementById('signalMain').textContent=signal.direction==='BUY'?'▲ BUY':signal.direction==='SELL'?'▼ SELL':'● WAIT';
+    document.getElementById('signalSub').textContent=signal.direction==='WAIT'?'Ищем подтверждение':signal.direction==='BUY'?'Покупаем YES (цена вверх)':'Покупаем NO (цена вниз)';
+    document.getElementById('signalEdge').textContent='Edge '+(signal.confidence-50).toFixed(1)+'%';
+    document.getElementById('confPercent').textContent=signal.confidence.toFixed(1)+'%';
+    document.getElementById('confGauge').style.width=signal.confidence+'%';
+    document.getElementById('riskLabel').textContent=signal.confidence>80?'Высокий':'Умеренный';
+    document.getElementById('riskLabel').style.color=signal.confidence>80?varGreen():signal.confidence<60?varRed():varOrange();
+    document.getElementById('momLabel').textContent=(ind.momentum>=0?'+':'')+ind.momentum.toFixed(2)+'%';
+}
+function renderConfluence(ind,signal){
+    const list=[
+        {label:'VWAP aligned',ok:(state.price>=ind.vwap)},
+        {label:'EMA Stack',ok:(state.price>=ind.ema21)},
+        {label:'RSI confirms',ok:(signal.direction==='BUY' && ind.rsi>45)||(signal.direction==='SELL' && ind.rsi<55)},
+        {label:'MACD histogram',ok:(signal.direction==='BUY' && ind.macd.hist>0)||(signal.direction==='SELL' && ind.macd.hist<0)},
+        {label:'Momentum sign',ok:(signal.direction==='BUY' && ind.momentum>0)||(signal.direction==='SELL' && ind.momentum<0)},
+        {label:'Low volatility',ok:Math.abs(ind.momentum)<0.5},
+        {label:'Session sync',ok:true}
+    ];
+    const okCount=list.filter(i=>i.ok).length;
+    document.getElementById('confScore').textContent=`${okCount}/7`;
+    document.getElementById('confBar').style.width=(okCount/7*100)+'%';
+    document.getElementById('confList').innerHTML=list.map(item=>`<li class="conf-item ${item.ok?'ok':''}"><span class="ck-dot">${item.ok?'✓':'○'}</span>${item.label}</li>`).join('');
+}
+function renderStats(){
+    const total=state.stats.wins+state.stats.losses;
+    const acc=total?((state.stats.wins/total)*100).toFixed(1):'--';
+    document.getElementById('statAcc').textContent=acc+'%';
+    document.getElementById('statTotal').textContent=total;
+    document.getElementById('statWL').textContent=`${state.stats.wins}/${state.stats.losses}`;
+    document.getElementById('statStreak').textContent=(state.stats.streak>=0?'+':'')+state.stats.streak;
+}
+function renderDistances(ind,signal){
+    document.getElementById('distConf').textContent=(signal.confidence-state.threshold).toFixed(1)+'%';
+    document.getElementById('distEMA').textContent=((ind.ema9-ind.ema21)/ind.ema21*100).toFixed(2)+'%';
+    document.getElementById('distRSI').textContent=(ind.rsi-50).toFixed(1);
+    const slice=state.candles.slice(-15);
+    const avg=slice.reduce((sum,c)=>sum+c.c,0)/slice.length;
+    document.getElementById('distPrice').textContent=(state.price-avg).toFixed(2);
+    document.getElementById('distMom').textContent=(ind.momentum).toFixed(2)+'%';
+}
+function drawChart(){
+    const rect=chartCanvas.getBoundingClientRect();
+    chartCanvas.width=rect.width*2;
+    chartCanvas.height=rect.height*2;
+    ctx.scale(2,2);
+    ctx.clearRect(0,0,rect.width,rect.height);
+    const data=state.history.slice(-260);
+    if(!data.length) return;
+    const prices=data.map(p=>p.price);
+    const min=Math.min(...prices);
+    const max=Math.max(...prices);
+    const range=max-min || 1;
+    ctx.strokeStyle='rgba(39,243,255,.15)';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    for(let i=0;i<data.length;i++){
+        const x=(i/(data.length-1))*rect.width;
+        const y=rect.height-((data[i].price-min)/range)*rect.height;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    const grad=ctx.createLinearGradient(0,0,0,rect.height);
+    grad.addColorStop(0,'rgba(39,243,255,.25)');
+    grad.addColorStop(1,'rgba(39,243,255,0)');
+    ctx.lineTo(rect.width,rect.height);
+    ctx.lineTo(0,rect.height);
+    ctx.closePath();
+    ctx.fillStyle=grad;
+    ctx.fill();
+    ctx.setTransform(1,0,0,1,0,0);
+}
+function updateClock(){
+    const now=new Date();
+    document.getElementById('clock').innerHTML=`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}<small>UTC ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}</small>`;
+    const minutes=now.getMinutes()%15;
+    const seconds=now.getSeconds();
+    const remaining=(14-minutes)*60+(59-seconds);
+    document.getElementById('cycleCountdown').textContent=`${pad(Math.floor(remaining/60))}:${pad(remaining%60)}`;
+    const phases=['OPEN','MOMENTUM','ACTIVE','CLOSE'];
+    const phaseIdx=minutes<4?0:minutes<8?1:minutes<12?2:3;
+    document.getElementById('phaseBadge').textContent='Phase '+phases[phaseIdx];
+    document.getElementById('cycleLabel').textContent=phaseIdx===3?'Цикл закрывается':'Окно входа';
+}
+function updatePF(){
+    pfState.timer--;
+    if(pfState.timer<=0){updatePredictCard();}
+    document.getElementById('pfMeta').textContent=`${pfState.status} • ${pfState.fee} • refresh ${pfState.timer}s`;
+}
+function varGreen(){return getComputedStyle(document.documentElement).getPropertyValue('--green');}
+function varRed(){return getComputedStyle(document.documentElement).getPropertyValue('--red');}
+function varOrange(){return getComputedStyle(document.documentElement).getPropertyValue('--orange');}
+document.querySelectorAll('.switch').forEach(sw=>{
+    sw.addEventListener('click',()=>{
+        sw.classList.toggle('on');
+        switches[sw.dataset.switch]=sw.classList.contains('on');
+    });
+});
+document.getElementById('btnDemo').addEventListener('click',()=>{
+    alert('Demo режим уже активен: все данные генерируются локально без сетевых запросов.');
+});
+window.addEventListener('resize',drawChart);
+startSession();
+seedData();
+updatePredictCard();
+render(0);
+setInterval(simulateTick,1800);
+setInterval(updateClock,1000);
+setInterval(updatePF,1000);
+</script>
 </body>
 </html>
