@@ -787,6 +787,7 @@
     <div class="controls">
         <select id="timeSelect"></select>
         <button class="cyber-btn" id="analyzeBtn" onclick="startAnalysis()">[ INITIALIZE SCAN ]</button>
+        <button class="cyber-btn" style="background:linear-gradient(135deg,rgba(10,255,96,0.2),rgba(0,243,255,0.2));border-color:var(--cyber-neon-green);color:var(--cyber-neon-green)" onclick="showDemoResults()">[ SHOW DEMO DATA ]</button>
     </div>
 
     <div class="status" id="statusMessage"></div>
@@ -1462,6 +1463,82 @@ setInterval(() => {
     document.getElementById('cyberCurrentTime').textContent = `SYSTEM TIME: ${timeString}`;
 }, 1000);
 
+// Демо-результаты для мгновенного отображения
+function showDemoResults() {
+    const status = document.getElementById('statusMessage');
+    const results = document.getElementById('cyberResults');
+    
+    // Показываем результаты
+    results.style.display = 'block';
+    
+    // Заполняем статистику
+    document.getElementById('totalCandles').textContent = '30';
+    document.getElementById('bullishCount').textContent = '14';
+    document.getElementById('bullishPercent').textContent = '46.7%';
+    document.getElementById('bearishCount').textContent = '16';
+    document.getElementById('bearishPercent').textContent = '53.3%';
+    document.getElementById('bullishRatio').textContent = '46.7%';
+    document.getElementById('avgBullishSize').textContent = '51.8%';
+    document.getElementById('avgBearishSize').textContent = '48.0%';
+    
+    // Генерируем демо-данные для таблицы
+    const tbody = document.getElementById('candleTableBody');
+    tbody.innerHTML = '';
+    
+    const demoData = [
+        {date:'2026-04-01',time:'12:00',open:67234.50,high:67456.20,low:67102.30,close:67389.10,type:'BULL'},
+        {date:'2026-03-31',time:'12:00',open:67389.10,high:67412.00,low:67001.50,close:67045.80,type:'BEAR'},
+        {date:'2026-03-30',time:'12:00',open:67045.80,high:67298.40,low:66989.20,close:67201.30,type:'BULL'},
+        {date:'2026-03-29',time:'12:00',open:67201.30,high:67201.30,low:66845.10,close:66912.40,type:'BEAR'},
+        {date:'2026-03-28',time:'12:00',open:66912.40,high:67156.80,low:66890.00,close:67089.50,type:'BULL'},
+        {date:'2026-03-27',time:'12:00',open:67089.50,high:67134.20,low:66723.40,close:66798.90,type:'BEAR'},
+        {date:'2026-03-26',time:'12:00',open:66798.90,high:67045.30,low:66756.10,close:66934.20,type:'BULL'},
+        {date:'2026-03-25',time:'12:00',open:66934.20,high:66989.50,low:66512.80,close:66601.40,type:'BEAR'},
+        {date:'2026-03-24',time:'12:00',open:66601.40,high:66823.70,low:66534.20,close:66745.60,type:'BULL'},
+        {date:'2026-03-23',time:'12:00',open:66745.60,high:66789.30,low:66401.50,close:66478.20,type:'BEAR'},
+        {date:'2026-03-22',time:'12:00',open:66478.20,high:66712.40,low:66423.10,close:66589.80,type:'BULL'},
+        {date:'2026-03-21',time:'12:00',open:66589.80,high:66634.50,low:66234.70,close:66312.90,type:'BEAR'},
+        {date:'2026-03-20',time:'12:00',open:66312.90,high:66567.20,low:66289.40,close:66445.30,type:'BULL'},
+        {date:'2026-03-19',time:'12:00',open:66445.30,high:66489.10,low:66078.50,close:66156.70,type:'BEAR'},
+        {date:'2026-03-18',time:'12:00',open:66156.70,high:66398.40,low:66123.20,close:66289.50,type:'BULL'},
+        {date:'2026-03-17',time:'12:00',open:66289.50,high:66334.80,low:65912.30,close:65989.60,type:'BEAR'},
+        {date:'2026-03-16',time:'12:00',open:65989.60,high:66234.70,low:65945.10,close:66123.40,type:'BULL'},
+        {date:'2026-03-15',time:'12:00',open:66123.40,high:66178.90,low:65789.20,close:65867.50,type:'BEAR'},
+        {date:'2026-03-14',time:'12:00',open:65867.50,high:66089.30,low:65823.40,close:65978.20,type:'BULL'},
+        {date:'2026-03-13',time:'12:00',open:65978.20,high:66012.60,low:65634.80,close:65712.40,type:'BEAR'},
+        {date:'2026-03-12',time:'12:00',open:65712.40,high:65934.50,low:65678.90,close:65823.70,type:'BULL'},
+        {date:'2026-03-11',time:'12:00',open:65823.70,high:65867.20,low:65456.30,close:65534.80,type:'BEAR'},
+        {date:'2026-03-10',time:'12:00',open:65534.80,high:65778.40,low:65501.20,close:65667.90,type:'BULL'},
+        {date:'2026-03-09',time:'12:00',open:65667.90,high:65712.30,low:65323.50,close:65401.20,type:'BEAR'},
+        {date:'2026-03-08',time:'12:00',open:65401.20,high:65623.80,low:65367.40,close:65512.60,type:'BULL'},
+        {date:'2026-03-07',time:'12:00',open:65512.60,high:65556.90,low:65189.70,close:65267.30,type:'BEAR'},
+        {date:'2026-03-06',time:'12:00',open:65267.30,high:65489.50,low:65234.10,close:65378.80,type:'BULL'},
+        {date:'2026-03-05',time:'12:00',open:65378.80,high:65423.20,low:65045.60,close:65123.40,type:'BEAR'},
+        {date:'2026-03-04',time:'12:00',open:65123.40,high:65345.70,low:65089.30,close:65234.90,type:'BULL'},
+        {date:'2026-03-03',time:'12:00',open:65234.90,high:65278.40,low:64912.80,close:64989.50,type:'BEAR'}
+    ];
+    
+    demoData.forEach(candle => {
+        const change = ((candle.close - candle.open) / candle.open) * 100;
+        const typeClass = candle.type === 'BULL' ? 'up' : 'down';
+        tbody.innerHTML += `
+            <tr>
+                <td>${candle.date}</td>
+                <td>${candle.time}</td>
+                <td>${candle.open.toFixed(2)}</td>
+                <td>${candle.high.toFixed(2)}</td>
+                <td>${candle.low.toFixed(2)}</td>
+                <td>${candle.close.toFixed(2)}</td>
+                <td class="${typeClass}">${change > 0 ? '+' : ''}${change.toFixed(2)}%</td>
+                <td class="${typeClass}">${candle.type}</td>
+            </tr>
+        `;
+    });
+    
+    status.textContent = "✓ DEMO DATA LOADED // 30 CANDLES ANALYZED";
+    status.className = "status success";
+}
+
 async function startAnalysis() {
     const btn = document.getElementById('analyzeBtn');
     const status = document.getElementById('statusMessage');
@@ -1602,6 +1679,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('click', () => initAudio(), { once: true });
     
     generateTimeOptions();
+    
+    // Показываем демо-результаты сразу при загрузке
+    showDemoResults();
 
     await loadCandles();
     wsConnect();
