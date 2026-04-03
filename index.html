@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predict.Fun — Personal BTC 15min Trading Terminal + Cyber Analyzer</title>
+    <title>Predict.Fun — Personal BTC 15min Trading Terminal</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,17 +22,6 @@
             --text: #e8eaf6;
             --text2: #7986cb;
             --border: #263055;
-            
-            /* Cyber Analyzer vars */
-            --cyber-bg-primary: #0a0e17;
-            --cyber-bg-secondary: #111625;
-            --cyber-bg-card: #1a1f2e;
-            --cyber-text-primary: #e0e6ed;
-            --cyber-text-secondary: #94a3b8;
-            --cyber-neon-cyan: #00f3ff;
-            --cyber-neon-purple: #bc13fe;
-            --cyber-neon-green: #0aff60;
-            --cyber-neon-red: #ff0055;
         }
         body {
             font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
@@ -46,7 +35,7 @@
             display: grid;
             grid-template-columns: 280px 1fr 300px;
             grid-template-rows: 56px 1fr;
-            min-height: 100vh;
+            height: 100vh;
             gap: 1px;
             background: var(--border);
         }
@@ -274,6 +263,74 @@
         .ctx-lbl { font-size: 9px; color: var(--text2); text-transform: uppercase; }
         .ctx-val { font-size: 15px; font-weight: 800; margin-top: 3px; }
 
+        .stats-30d {
+            background: var(--bg1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+        .stats-30d-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .stats-30d-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stats-status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        .stats-status.load {
+            color: var(--cyan);
+            background: rgba(0,243,255,.1);
+            border: 1px solid rgba(0,243,255,.3);
+            animation: pulse 2s infinite;
+        }
+        .stats-status.ok {
+            color: var(--green);
+            background: rgba(0,230,118,.1);
+            border: 1px solid rgba(0,230,118,.3);
+        }
+        .stats-status.err {
+            color: var(--red);
+            background: rgba(255,23,68,.1);
+            border: 1px solid rgba(255,23,68,.3);
+        }
+        .stats-simple {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 0;
+        }
+        .stats-big {
+            font-size: 28px;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
+        }
+        .stats-big.bull { color: var(--green); text-shadow: 0 0 15px rgba(0,230,118,.6); }
+        .stats-big.bear { color: var(--red); text-shadow: 0 0 15px rgba(255,23,68,.6); }
+        .stats-vs {
+            font-size: 14px;
+            color: var(--text2);
+        }
+        .stats-detail {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text2);
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
         /* ── MODAL ── */
         .modal-bg {
             display: none; position: fixed; inset: 0;
@@ -334,248 +391,6 @@
         ::-webkit-scrollbar-track { background: var(--bg1); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-        /* ── CYBER ANALYZER STYLES ── */
-        .cyber-container {
-            max-width: 1100px;
-            margin: 40px auto;
-            background: rgba(17, 22, 37, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
-        }
-
-        .cyber-h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--cyber-neon-cyan), var(--cyber-neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .cyber-h2 {
-            text-align: center;
-            font-size: 1rem;
-            color: var(--cyber-text-secondary);
-            margin-bottom: 30px;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .time-display {
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            color: var(--cyber-neon-cyan);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(0, 243, 255, 0.05);
-            border-radius: 8px;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
-        select {
-            padding: 12px 15px;
-            background: var(--cyber-bg-card);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            border-radius: 8px;
-            color: var(--cyber-text-primary);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Courier New', monospace;
-            max-width: 140px;
-        }
-
-        select:hover {
-            border-color: var(--cyber-neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--cyber-neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-        }
-
-        button.cyber-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(188, 19, 254, 0.2));
-            border: 1px solid var(--cyber-neon-cyan);
-            border-radius: 8px;
-            color: var(--cyber-neon-cyan);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button.cyber-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.4), rgba(188, 19, 254, 0.4));
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        button.cyber-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            border-color: var(--cyber-text-secondary);
-            color: var(--cyber-text-secondary);
-        }
-
-        .status {
-            text-align: center;
-            margin: 20px 0;
-            font-weight: 600;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .status.loading {
-            color: var(--cyber-neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .status.error {
-            color: var(--cyber-neon-red);
-            background: rgba(255, 0, 85, 0.1);
-            border: 1px solid rgba(255, 0, 85, 0.3);
-        }
-
-        .status.success {
-            color: var(--cyber-neon-green);
-            background: rgba(10, 255, 96, 0.1);
-            border: 1px solid rgba(10, 255, 96, 0.3);
-        }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .stat-card {
-            background: var(--cyber-bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(0, 243, 255, 0.15);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--cyber-neon-cyan), var(--cyber-neon-purple));
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
-            border-color: rgba(0, 243, 255, 0.4);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--cyber-text-primary);
-            font-family: 'Courier New', monospace;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--cyber-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .bullish { color: var(--cyber-neon-green) !important; text-shadow: 0 0 10px rgba(10, 255, 96, 0.5); }
-        .bearish { color: var(--cyber-neon-red) !important; text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
-        .neutral { color: var(--cyber-neon-cyan) !important; }
-
-        .cyber-h3 {
-            color: var(--cyber-neon-cyan);
-            margin: 40px 0 20px;
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 243, 255, 0.15);
-            background: var(--cyber-bg-card);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            font-family: 'Courier New', monospace;
-        }
-
-        th {
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--cyber-neon-cyan);
-            padding: 15px 10px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 11px;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            position: sticky;
-            top: 0;
-        }
-
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            color: var(--cyber-text-secondary);
-        }
-
-        tr:hover td {
-            background: rgba(0, 243, 255, 0.05);
-            color: var(--cyber-text-primary);
-        }
-
-        .up { color: var(--cyber-neon-green); text-shadow: 0 0 5px rgba(10, 255, 96, 0.5); }
-        .down { color: var(--cyber-neon-red); text-shadow: 0 0 5px rgba(255, 0, 85, 0.5); }
-
-        #cyberResults { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
         /* ── RESPONSIVE ── */
         @media (max-width: 1200px) {
             .app { grid-template-columns: 240px 1fr 260px; }
@@ -583,11 +398,6 @@
         @media (max-width: 900px) {
             .app { grid-template-columns: 1fr; grid-template-rows: 56px auto; height: auto; }
             .side-l, .side-r { display: none; }
-            .cyber-container { padding: 25px; }
-            .cyber-h1 { font-size: 1.8rem; }
-            .controls { flex-direction: column; }
-            select, button.cyber-btn { width: 100%; max-width: none; }
-            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -650,7 +460,7 @@
             <div class="row"><span class="row-label">24h Vol</span><span class="row-val" id="btcVol">--</span></div>
         </div>
 
-        <!-- Predict.Fun Market -->
+        <!-- Predict.Fun Market (автообновление каждые 5 минут) -->
         <div class="card" id="pfMarketCard">
             <div class="card-hdr">
                 <span>📊 Predict.Fun Market</span>
@@ -716,9 +526,25 @@
             <div class="ctx" id="ctxSig"><div class="ctx-lbl">Signal</div><div class="ctx-val" id="cvSig">--</div></div>
             <div class="ctx" id="ctxCycle"><div class="ctx-lbl">15m Cycle</div><div class="ctx-val" id="cvCycle">--</div></div>
         </div>
+
+        <!-- 30-DAY AUTO STATS -->
+        <div class="stats-30d" id="stats30d">
+            <div class="stats-30d-hdr">
+                <span class="stats-30d-title">📊 30-Day History at <span id="statsCurrentTime">--:--</span> UTC</span>
+            </div>
+            <div class="stats-status load" id="statsStatus">⏳ Loading 30 days data...</div>
+            <div class="stats-result" id="statsResult" style="display:none;">
+                <div class="stats-simple">
+                    <span class="stats-big bull">▲ <span id="sBullCount">--</span> Bullish</span>
+                    <span class="stats-vs">vs</span>
+                    <span class="stats-big bear">▼ <span id="sBearCount">--</span> Bearish</span>
+                </div>
+                <div class="stats-detail" id="statsDetail"></div>
+            </div>
+        </div>
     </main>
 
-    <!-- RIGHT SIDEBAR -->
+    <!-- RIGHT SIDEBAR (без дублирования) -->
     <aside class="side-r">
 
         <!-- Signal -->
@@ -777,71 +603,6 @@
     </aside>
 </div>
 
-<!-- CYBER ANALYZER SECTION (AT THE BOTTOM) -->
-<div class="cyber-container">
-    <h1 class="cyber-h1">BTC/USDT CYBER ANALYZER</h1>
-    <h2 class="cyber-h2">15-Minute Candle Statistics // 30 Days</h2>
-    
-    <div class="time-display" id="cyberCurrentTime">SYSTEM TIME: SYNCING...</div>
-
-    <div class="controls">
-        <select id="timeSelect"></select>
-        <button class="cyber-btn" id="analyzeBtn" onclick="startAnalysis()">[ INITIALIZE SCAN ]</button>
-        <button class="cyber-btn" style="background:linear-gradient(135deg,rgba(10,255,96,0.2),rgba(0,243,255,0.2));border-color:var(--cyber-neon-green);color:var(--cyber-neon-green)" onclick="showDemoResults()">[ SHOW DEMO DATA ]</button>
-    </div>
-
-    <div class="status" id="statusMessage"></div>
-
-    <div id="cyberResults" style="display:none;">
-        <h3 class="cyber-h3">// ANALYSIS RESULTS</h3>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="totalCandles">0</div>
-                <div class="stat-label">Total Candles</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value bullish" id="bullishCount">0</div>
-                <div class="stat-label">Bullish (<span id="bullishPercent">0%</span>)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value bearish" id="bearishCount">0</div>
-                <div class="stat-label">Bearish (<span id="bearishPercent">0%</span>)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value neutral" id="bullishRatio">0%</div>
-                <div class="stat-label">Bullish Ratio</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avgBullishSize">0%</div>
-                <div class="stat-label">Avg Bullish Body</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avgBearishSize">0%</div>
-                <div class="stat-label">Avg Bearish Body</div>
-            </div>
-        </div>
-
-        <h3 class="cyber-h3">// RECENT CANDLES [LAST 30]</h3>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Open</th>
-                        <th>High</th>
-                        <th>Low</th>
-                        <th>Close</th>
-                        <th>Change</th>
-                        <th>Type</th>
-                    </tr>
-                </thead>
-                <tbody id="candleTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
 <!-- Settings Modal -->
 <div class="modal-bg" id="modalBG">
     <div class="modal">
@@ -875,7 +636,7 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// PREDICT.FUN TERMINAL CODE
+// CONFIG & STATE
 // ═══════════════════════════════════════════════════════════
 const PF_BASE = 'https://api.predict.fun';
 
@@ -887,9 +648,10 @@ const S = {
     interval: parseInt(localStorage.getItem('pf_interval') || '2000'),
     alerts: { buy: true, sell: true, tg: true },
 
+    // runtime
     btc: { price: 0, prev: 0, hi: 0, lo: Infinity, vol: 0, ch: 0 },
-    priceHist: [],
-    candles: [],
+    priceHist: [],      // {t, p}
+    candles: [],        // 1min OHLCV from REST
     rsiHist: [],
     confHist: [],
     wsOK: false,
@@ -909,10 +671,16 @@ let analysisTimer = null;
 let pfTimer = null;
 let pfUpdateTimer = null;
 
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
 const $ = id => document.getElementById(id);
 const txt = (id, v) => { const e = $(id); if (e) e.textContent = v; };
 const fmt = (n, d=2) => n >= 1e9 ? (n/1e9).toFixed(1)+'B' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n.toFixed(d);
 
+// ═══════════════════════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════════════════════
 function initAudio() { if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); if (audio.state === 'suspended') audio.resume(); }
 
 function beep(type) {
@@ -937,6 +705,9 @@ function beep(type) {
 function testBeep() { beep('BUY'); setTimeout(() => beep('SELL'), 600); }
 function swToggle(el, key) { S.alerts[key] = !S.alerts[key]; el.classList.toggle('on'); }
 
+// ═══════════════════════════════════════════════════════════
+// TELEGRAM
+// ═══════════════════════════════════════════════════════════
 function tgSend(msg) {
     if (!S.alerts.tg || !S.tgToken || !S.tgChat) return;
     fetch(`https://api.telegram.org/bot${S.tgToken}/sendMessage`, {
@@ -946,6 +717,9 @@ function tgSend(msg) {
     }).catch(() => {});
 }
 
+// ═══════════════════════════════════════════════════════════
+// BINANCE WEBSOCKET
+// ═══════════════════════════════════════════════════════════
 function wsConnect() {
     if (wsRef && wsRef.readyState < 2) return;
     wsRef = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
@@ -979,10 +753,12 @@ function onTick() {
     const p = S.btc.price;
     if (!p) return;
 
+    // header
     txt('hdrPrice', '$' + p.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
     const hc = $('hdrChange');
     if (hc) { hc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%'; hc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)'; }
 
+    // left panel
     txt('btcP', '$' + p.toLocaleString('en-US', {maximumFractionDigits:0}));
     const bc = $('btcCh');
     if (bc) { bc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%'; bc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)'; }
@@ -990,10 +766,12 @@ function onTick() {
     txt('btcLo', '$' + S.btc.lo.toLocaleString('en-US', {maximumFractionDigits:0}));
     txt('btcVol', fmt(S.btc.vol, 0) + ' BTC');
 
+    // price history
     const t = new Date().toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
     S.priceHist.push({t, p});
     if (S.priceHist.length > 600) S.priceHist.shift();
 
+    // update current candle
     if (S.candles.length) {
         const last = S.candles[S.candles.length - 1];
         const nowMin = Math.floor(Date.now() / 60000) * 60000;
@@ -1006,6 +784,9 @@ function onTick() {
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+// BINANCE REST — HISTORICAL CANDLES
+// ═══════════════════════════════════════════════════════════
 async function loadCandles() {
     try {
         const r = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=120');
@@ -1014,6 +795,9 @@ async function loadCandles() {
     } catch (e) { console.error('Candle load failed:', e); }
 }
 
+// ═══════════════════════════════════════════════════════════
+// PREDICT.FUN API (с автообновлением каждые 5 минут)
+// ═══════════════════════════════════════════════════════════
 async function pfFetch(endpoint) {
     const r = await fetch(PF_BASE + endpoint, {
         headers: {
@@ -1043,6 +827,7 @@ async function pfLoadMarket() {
             S.pfConnected = true;
             S.pfLastUpdate = new Date();
 
+            // Обновляем только левую панель (дублирование убрано)
             txt('pfTitle', S.pfMarket.title || S.pfMarket.question || '--');
             txt('pfStatus', S.pfMarket.tradingStatus || 'OPEN');
             txt('pfId', S.pfMarket.id || '--');
@@ -1064,6 +849,7 @@ async function pfLoadMarket() {
         $('badgeAPI').className = 'badge badge-api err';
         txt('badgeAPI', '✖ API: ' + e.message);
         
+        // Очищаем данные при ошибке
         txt('pfTitle', '--');
         txt('pfStatus', '--');
         txt('pfId', '--');
@@ -1077,14 +863,18 @@ async function pfUpdate() {
     await pfLoadMarket();
 }
 
+// Запуск автообновления каждые 5 минут (300000 мс)
 function startPfAutoUpdate() {
     if (pfUpdateTimer) clearInterval(pfUpdateTimer);
     pfUpdateTimer = setInterval(async () => {
         console.log('🔄 Auto-updating Predict.Fun market data...');
         await pfUpdate();
-    }, 300000);
+    }, 300000); // 5 минут
 }
 
+// ═══════════════════════════════════════════════════════════
+// TECHNICAL ANALYSIS
+// ═══════════════════════════════════════════════════════════
 function ema(arr, p) {
     if (arr.length < p) return arr[arr.length - 1] || 0;
     const k = 2 / (p + 1);
@@ -1136,6 +926,7 @@ function analyze() {
     const avg = rets.reduce((a,b) => a+b, 0) / rets.length;
     const vol = Math.sqrt(rets.reduce((a,r2) => a + (r2-avg)**2, 0) / rets.length);
 
+    // scoring
     let bull = 0, bear = 0;
     if (r > 55) bull += 2; if (r > 65) bull += 1;
     if (r < 45) bear += 2; if (r < 35) bear += 1;
@@ -1154,6 +945,10 @@ function analyze() {
 
     return { sig, conf, rsi: r, e9, e21, bullEMA, crossUp, crossDn, macd: m, mom, vol, bull, bear, lowVol: vol < 0.12 };
 }
+
+// ═══════════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════════
 
 function renderSignal(a) {
     const card = $('sigCard'), dir = $('sigDir'), sub = $('sigSub');
@@ -1183,6 +978,7 @@ function renderSignal(a) {
         risk.style.color = a.vol > .25 ? 'var(--red)' : a.vol > .1 ? 'var(--yellow)' : 'var(--green)';
     }
 
+    // fire alert if new signal
     if (strong && a.sig !== 'WAIT') {
         const now = Date.now();
         if (S.lastSig !== a.sig || (now - S.lastSigTime > 300000)) {
@@ -1257,6 +1053,7 @@ function renderConfluence(a) {
     if (cl) cl.innerHTML = checks.map(c => `<li class="${c.ok ? 'ok' : ''}"><span class="ck-dot">${c.ok ? '✓' : '○'}</span>${c.n}</li>`).join('');
 }
 
+// ── Distance Metrics render ──
 function renderDistance(a) {
     const setVal = (id, value, suffix = '') => {
         const el = $(id);
@@ -1279,6 +1076,9 @@ function renderDistance(a) {
     setVal('distMom', a.mom, '%');
 }
 
+// ═══════════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════════
 function initCharts() {
     const opts = (yMin, yMax) => ({
         responsive: true, maintainAspectRatio: false,
@@ -1345,6 +1145,9 @@ function updateCharts(a) {
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+// ALERT / TOAST
+// ═══════════════════════════════════════════════════════════
 function showAlert(a) {
     const bg = $('alertBG'), box = $('alertBox');
     if (!bg) return;
@@ -1367,6 +1170,9 @@ function showToast(type, msg) {
     setTimeout(() => t.className = 'toast', 5000);
 }
 
+// ═══════════════════════════════════════════════════════════
+// CLOCK & COUNTDOWN
+// ═══════════════════════════════════════════════════════════
 function tickClock() {
     const n = new Date();
     txt('clock', n.toLocaleTimeString('en-US', {hour12: false}));
@@ -1382,6 +1188,9 @@ function tickClock() {
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+// MAIN ANALYSIS LOOP
+// ═══════════════════════════════════════════════════════════
 function runAnalysis() {
     const a = analyze();
     if (!a) return;
@@ -1394,6 +1203,9 @@ function runAnalysis() {
     updateCharts(a);
 }
 
+// ═══════════════════════════════════════════════════════════
+// SETTINGS MODAL
+// ═══════════════════════════════════════════════════════════
 function openModal() {
     $('modalBG').classList.add('open');
     $('inKey').value = S.apiKey;
@@ -1418,9 +1230,11 @@ function saveModal() {
 
     $('modalBG').classList.remove('open');
 
+    // Reconnect API
     S.pfMarket = null; S.pfConnected = false;
     pfUpdate();
 
+    // Restart analysis timer
     if (analysisTimer) clearInterval(analysisTimer);
     analysisTimer = setInterval(runAnalysis, S.interval);
 
@@ -1432,6 +1246,7 @@ document.addEventListener('click', e => {
     if (e.target === $('alertBG')) $('alertBG').classList.remove('show');
 });
 
+// Timeframe buttons
 document.querySelectorAll('.tf-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('on'));
@@ -1441,231 +1256,102 @@ document.querySelectorAll('.tf-btn').forEach(btn => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// CYBER ANALYZER CODE
+// 30-DAY AUTO STATS (автоматически при загрузке + каждые 15 мин)
 // ═══════════════════════════════════════════════════════════
-function generateTimeOptions() {
-    const select = document.getElementById('timeSelect');
-    for (let h = 0; h < 24; h++) {
-        for (let m of [0, 15, 30, 45]) {
-            const time = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-            const opt = document.createElement('option');
-            opt.value = time;
-            opt.textContent = time + ' UTC';
-            if (time === '12:00') opt.selected = true;
-            select.appendChild(opt);
-        }
-    }
-}
+let lastStatsSlot = -1;
 
-setInterval(() => {
+function getCurrentSlot() {
     const now = new Date();
-    const timeString = now.toISOString().split('T')[1].split('.')[0] + " UTC";
-    document.getElementById('cyberCurrentTime').textContent = `SYSTEM TIME: ${timeString}`;
-}, 1000);
-
-// Демо-результаты для мгновенного отображения
-function showDemoResults() {
-    const status = document.getElementById('statusMessage');
-    const results = document.getElementById('cyberResults');
-    
-    // Показываем результаты
-    results.style.display = 'block';
-    
-    // Заполняем статистику
-    document.getElementById('totalCandles').textContent = '30';
-    document.getElementById('bullishCount').textContent = '14';
-    document.getElementById('bullishPercent').textContent = '46.7%';
-    document.getElementById('bearishCount').textContent = '16';
-    document.getElementById('bearishPercent').textContent = '53.3%';
-    document.getElementById('bullishRatio').textContent = '46.7%';
-    document.getElementById('avgBullishSize').textContent = '51.8%';
-    document.getElementById('avgBearishSize').textContent = '48.0%';
-    
-    // Генерируем демо-данные для таблицы
-    const tbody = document.getElementById('candleTableBody');
-    tbody.innerHTML = '';
-    
-    const demoData = [
-        {date:'2026-04-01',time:'12:00',open:67234.50,high:67456.20,low:67102.30,close:67389.10,type:'BULL'},
-        {date:'2026-03-31',time:'12:00',open:67389.10,high:67412.00,low:67001.50,close:67045.80,type:'BEAR'},
-        {date:'2026-03-30',time:'12:00',open:67045.80,high:67298.40,low:66989.20,close:67201.30,type:'BULL'},
-        {date:'2026-03-29',time:'12:00',open:67201.30,high:67201.30,low:66845.10,close:66912.40,type:'BEAR'},
-        {date:'2026-03-28',time:'12:00',open:66912.40,high:67156.80,low:66890.00,close:67089.50,type:'BULL'},
-        {date:'2026-03-27',time:'12:00',open:67089.50,high:67134.20,low:66723.40,close:66798.90,type:'BEAR'},
-        {date:'2026-03-26',time:'12:00',open:66798.90,high:67045.30,low:66756.10,close:66934.20,type:'BULL'},
-        {date:'2026-03-25',time:'12:00',open:66934.20,high:66989.50,low:66512.80,close:66601.40,type:'BEAR'},
-        {date:'2026-03-24',time:'12:00',open:66601.40,high:66823.70,low:66534.20,close:66745.60,type:'BULL'},
-        {date:'2026-03-23',time:'12:00',open:66745.60,high:66789.30,low:66401.50,close:66478.20,type:'BEAR'},
-        {date:'2026-03-22',time:'12:00',open:66478.20,high:66712.40,low:66423.10,close:66589.80,type:'BULL'},
-        {date:'2026-03-21',time:'12:00',open:66589.80,high:66634.50,low:66234.70,close:66312.90,type:'BEAR'},
-        {date:'2026-03-20',time:'12:00',open:66312.90,high:66567.20,low:66289.40,close:66445.30,type:'BULL'},
-        {date:'2026-03-19',time:'12:00',open:66445.30,high:66489.10,low:66078.50,close:66156.70,type:'BEAR'},
-        {date:'2026-03-18',time:'12:00',open:66156.70,high:66398.40,low:66123.20,close:66289.50,type:'BULL'},
-        {date:'2026-03-17',time:'12:00',open:66289.50,high:66334.80,low:65912.30,close:65989.60,type:'BEAR'},
-        {date:'2026-03-16',time:'12:00',open:65989.60,high:66234.70,low:65945.10,close:66123.40,type:'BULL'},
-        {date:'2026-03-15',time:'12:00',open:66123.40,high:66178.90,low:65789.20,close:65867.50,type:'BEAR'},
-        {date:'2026-03-14',time:'12:00',open:65867.50,high:66089.30,low:65823.40,close:65978.20,type:'BULL'},
-        {date:'2026-03-13',time:'12:00',open:65978.20,high:66012.60,low:65634.80,close:65712.40,type:'BEAR'},
-        {date:'2026-03-12',time:'12:00',open:65712.40,high:65934.50,low:65678.90,close:65823.70,type:'BULL'},
-        {date:'2026-03-11',time:'12:00',open:65823.70,high:65867.20,low:65456.30,close:65534.80,type:'BEAR'},
-        {date:'2026-03-10',time:'12:00',open:65534.80,high:65778.40,low:65501.20,close:65667.90,type:'BULL'},
-        {date:'2026-03-09',time:'12:00',open:65667.90,high:65712.30,low:65323.50,close:65401.20,type:'BEAR'},
-        {date:'2026-03-08',time:'12:00',open:65401.20,high:65623.80,low:65367.40,close:65512.60,type:'BULL'},
-        {date:'2026-03-07',time:'12:00',open:65512.60,high:65556.90,low:65189.70,close:65267.30,type:'BEAR'},
-        {date:'2026-03-06',time:'12:00',open:65267.30,high:65489.50,low:65234.10,close:65378.80,type:'BULL'},
-        {date:'2026-03-05',time:'12:00',open:65378.80,high:65423.20,low:65045.60,close:65123.40,type:'BEAR'},
-        {date:'2026-03-04',time:'12:00',open:65123.40,high:65345.70,low:65089.30,close:65234.90,type:'BULL'},
-        {date:'2026-03-03',time:'12:00',open:65234.90,high:65278.40,low:64912.80,close:64989.50,type:'BEAR'}
-    ];
-    
-    demoData.forEach(candle => {
-        const change = ((candle.close - candle.open) / candle.open) * 100;
-        const typeClass = candle.type === 'BULL' ? 'up' : 'down';
-        tbody.innerHTML += `
-            <tr>
-                <td>${candle.date}</td>
-                <td>${candle.time}</td>
-                <td>${candle.open.toFixed(2)}</td>
-                <td>${candle.high.toFixed(2)}</td>
-                <td>${candle.low.toFixed(2)}</td>
-                <td>${candle.close.toFixed(2)}</td>
-                <td class="${typeClass}">${change > 0 ? '+' : ''}${change.toFixed(2)}%</td>
-                <td class="${typeClass}">${candle.type}</td>
-            </tr>
-        `;
-    });
-    
-    status.textContent = "✓ DEMO DATA LOADED // 30 CANDLES ANALYZED";
-    status.className = "status success";
+    const h = now.getUTCHours();
+    const m = now.getUTCMinutes();
+    const slotMins = Math.floor(m / 15) * 15;
+    return h * 4 + Math.floor(slotMins / 15); // 0-95 (96 слотов в день)
 }
 
-async function startAnalysis() {
-    const btn = document.getElementById('analyzeBtn');
-    const status = document.getElementById('statusMessage');
-    const results = document.getElementById('cyberResults');
-    const timeSlot = document.getElementById('timeSelect').value;
+async function load30DayAuto() {
+    const status = $('statsStatus');
+    const result = $('statsResult');
+    const timeEl = $('statsCurrentTime');
     
-    btn.disabled = true;
-    btn.textContent = "[ SCANNING... ]";
-    results.style.display = 'none';
-    status.textContent = "CONNECTING TO BINANCE API // FETCHING 30 DAYS DATA...";
-    status.className = "status loading";
-
+    // Получаем текущее время UTC
+    const now = new Date();
+    const utcHours = now.getUTCHours();
+    const utcMins = now.getUTCMinutes();
+    // Округляем до ближайшего 15-минутного слота
+    const slotMins = Math.floor(utcMins / 15) * 15;
+    const timeSlot = String(utcHours).padStart(2,'0') + ':' + String(slotMins).padStart(2,'0');
+    
+    if (timeEl) timeEl.textContent = timeSlot;
+    if (status) { status.className = 'stats-status load'; status.textContent = '⏳ Loading 30 days data for ' + timeSlot + ' UTC...'; }
+    if (result) result.style.display = 'none';
+    
     try {
-        const candles = await fetch30DaysData();
-        const filteredCandles = filterByTimeSlot(candles, timeSlot);
+        const candles = await fetch30DayCandles();
+        const filtered = filterCandlesByTime(candles, timeSlot);
         
-        if (filteredCandles.length === 0) {
-            throw new Error("NO DATA FOUND FOR SELECTED TIME SLOT");
+        if (filtered.length === 0) throw new Error('NO DATA');
+        
+        // Считаем bullish/bearish
+        let bull = 0, bear = 0;
+        filtered.forEach(c => {
+            const o = +c[1], cl = +c[4];
+            if (cl > o) bull++;
+            else if (cl < o) bear++;
+        });
+        
+        // Показываем результат
+        txt('sBullCount', bull);
+        txt('sBearCount', bear);
+        
+        const detail = $('statsDetail');
+        if (detail) {
+            const total = bull + bear;
+            const bullPct = total > 0 ? ((bull / total) * 100).toFixed(1) : 0;
+            const bearPct = total > 0 ? ((bear / total) * 100).toFixed(1) : 0;
+            detail.textContent = `Total: ${total} candles | Bullish: ${bullPct}% | Bearish: ${bearPct}%`;
         }
-
-        const stats = calculateStatistics(filteredCandles);
-        renderResults(stats, filteredCandles);
         
-        status.textContent = "SCAN COMPLETE // DATA PROCESSED";
-        status.className = "status success";
-        results.style.display = 'block';
-    } catch (error) {
-        status.textContent = "ERROR: " + error.message;
-        status.className = "status error";
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "[ INITIALIZE SCAN ]";
+        lastStatsSlot = getCurrentSlot();
+        
+        if (status) { status.className = 'stats-status ok'; status.textContent = '✓ Loaded ' + filtered.length + ' candles'; }
+        if (result) result.style.display = 'block';
+    } catch (e) {
+        if (status) { status.className = 'stats-status err'; status.textContent = '✖ Error: ' + e.message; }
     }
 }
 
-async function fetch30DaysData() {
-    const symbol = "BTCUSDT";
-    const interval = "15m";
+// Проверяем каждую секунду — не наступил ли новый 15-минутный слот
+function checkStatsRefresh() {
+    const currentSlot = getCurrentSlot();
+    if (currentSlot !== lastStatsSlot) {
+        console.log('🔄 New 15-min slot detected, refreshing stats...');
+        load30DayAuto();
+    }
+}
+
+async function fetch30DayCandles() {
     const endTime = Date.now();
     const startTime = endTime - (30 * 24 * 60 * 60 * 1000);
-    let allCandles = [];
-    let currentStartTime = startTime;
-
-    while (currentStartTime < endTime) {
-        const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&startTime=${currentStartTime}&endTime=${endTime}&limit=1000`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("CONNECTION FAILED // CHECK NETWORK");
-        const data = await response.json();
-        if (data.length === 0) break;
-        allCandles = allCandles.concat(data);
-        currentStartTime = data[data.length - 1][0] + 1;
+    let all = [];
+    let cursor = startTime;
+    
+    while (cursor < endTime) {
+        const url = 'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&startTime=' + cursor + '&endTime=' + endTime + '&limit=1000';
+        const r = await fetch(url);
+        if (!r.ok) throw new Error('API FAILED');
+        const d = await r.json();
+        if (!d.length) break;
+        all = all.concat(d);
+        cursor = d[d.length - 1][0] + 1;
     }
-    return allCandles;
+    return all;
 }
 
-function filterByTimeSlot(candles, timeSlot) {
-    const [targetHour, targetMinute] = timeSlot.split(':').map(Number);
-    return candles.filter(candle => {
-        const date = new Date(candle[0]);
-        return date.getUTCHours() === targetHour && date.getUTCMinutes() === targetMinute;
-    });
-}
-
-function calculateStatistics(candles) {
-    let bullish = 0, bearish = 0, neutral = 0;
-    let totalBullishBody = 0, totalBearishBody = 0;
-
-    candles.forEach(candle => {
-        const open = parseFloat(candle[1]), close = parseFloat(candle[4]);
-        const high = parseFloat(candle[2]), low = parseFloat(candle[3]);
-        const range = high - low;
-        const body = Math.abs(close - open);
-        const bodyPercent = range > 0 ? (body / range) * 100 : 0;
-
-        if (close > open) { bullish++; totalBullishBody += bodyPercent; }
-        else if (close < open) { bearish++; totalBearishBody += bodyPercent; }
-        else { neutral++; }
-    });
-
-    const total = candles.length;
-    return {
-        total, bullish, bearish, neutral,
-        bullishPercent: (bullish / total) * 100,
-        bearishPercent: (bearish / total) * 100,
-        bullishRatio: total > 0 ? (bullish / total) * 100 : 0,
-        avgBullishSize: bullish > 0 ? totalBullishBody / bullish : 0,
-        avgBearishSize: bearish > 0 ? totalBearishBody / bearish : 0,
-        candles
-    };
-}
-
-function renderResults(stats, candles) {
-    document.getElementById('totalCandles').textContent = stats.total;
-    document.getElementById('bullishCount').textContent = stats.bullish;
-    document.getElementById('bullishPercent').textContent = stats.bullishPercent.toFixed(1) + '%';
-    document.getElementById('bearishCount').textContent = stats.bearish;
-    document.getElementById('bearishPercent').textContent = stats.bearishPercent.toFixed(1) + '%';
-    document.getElementById('bullishRatio').textContent = stats.bullishRatio.toFixed(1) + '%';
-    document.getElementById('avgBullishSize').textContent = stats.avgBullishSize.toFixed(1) + '%';
-    document.getElementById('avgBearishSize').textContent = stats.avgBearishSize.toFixed(1) + '%';
-
-    const tbody = document.getElementById('candleTableBody');
-    tbody.innerHTML = '';
-    const recentCandles = candles.slice(-30).reverse();
-
-    recentCandles.forEach(candle => {
-        const open = parseFloat(candle[1]), close = parseFloat(candle[4]);
-        const high = parseFloat(candle[2]), low = parseFloat(candle[3]);
-        const change = ((close - open) / open) * 100;
-        const type = close > open ? 'BULL' : (close < open ? 'BEAR' : 'NEUTRAL');
-        const typeClass = close > open ? 'up' : (close < open ? 'down' : '');
-        const dateObj = new Date(candle[0]);
-        const dateStr = dateObj.toISOString().split('T')[0];
-        const timeStr = dateObj.toISOString().split('T')[1].substring(0, 5);
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${dateStr}</td>
-                <td>${timeStr}</td>
-                <td>${open.toFixed(2)}</td>
-                <td>${high.toFixed(2)}</td>
-                <td>${low.toFixed(2)}</td>
-                <td>${close.toFixed(2)}</td>
-                <td class="${typeClass}">${change > 0 ? '+' : ''}${change.toFixed(2)}%</td>
-                <td class="${typeClass}">${type}</td>
-            </tr>
-        `;
+function filterCandlesByTime(candles, timeSlot) {
+    const [h, m] = timeSlot.split(':').map(Number);
+    return candles.filter(c => {
+        const d = new Date(c[0]);
+        return d.getUTCHours() === h && d.getUTCMinutes() === m;
     });
 }
 
@@ -1677,20 +1363,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     tickClock();
     setInterval(tickClock, 1000);
     document.addEventListener('click', () => initAudio(), { once: true });
-    
-    generateTimeOptions();
-    
-    // Показываем демо-результаты сразу при загрузке
-    showDemoResults();
 
+    // Load BTC candle history
     await loadCandles();
+
+    // Connect Binance WS
     wsConnect();
+
+    // Try Predict.fun API
     await pfUpdate();
+    
+    // Запускаем автообновление Predict.fun каждые 5 минут
     startPfAutoUpdate();
 
+    // Load 30-day stats automatically
+    load30DayAuto();
+    
+    // Check for new 15-min slot every second
+    setInterval(checkStatsRefresh, 1000);
+
+    // Start analysis
     setTimeout(runAnalysis, 1500);
     analysisTimer = setInterval(runAnalysis, S.interval);
 
+    // Periodic candle reload
     setInterval(loadCandles, 60000);
 });
 </script>
